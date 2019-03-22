@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  pg-shardy:
+    image: postgres:11.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  app:
+    image: django_shardy:0.0.1
+    environment:
+      PG_NAME: 'postgres'
+      PG_PASSWORD: ''
+      PG_PORT: '5432'
+      PG_USER: 'postgres'
+      DEBUG: 1
+    depends_on:
+      - pg-shardy
+    volumes:
+      - ./:/app/:cached
+    working_dir: /app/
+    command: >
+      bash -c "
+        python setup.py develop &&
+        cd example/simple &&
+        python manage.py migrate &&
+        python manage.py test --noinput shardy &&
+        exit 0
+      "
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"

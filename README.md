@@ -1,2 +1,2 @@
-# sailplay_spt_django
+# shardy
 Sharding db per tenant utils

@@ -1,0 +1,2 @@
+recursive-include shardy/*.py
+recursive-include shardy/migrations/*.py
