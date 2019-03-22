@@ -1,4 +1,6 @@
 import os
+
+from pip._internal.req import parse_requirements
 from setuptools import find_packages, setup
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
@@ -6,6 +8,8 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
 
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
+with open('req.txt') as f:
+    required = f.read().splitlines()
 
 setup(
     name='django-shardy',
@@ -18,6 +22,7 @@ setup(
     url='https://github.com/iamthegoodbot/django-shardy',
     author='Rouslan Korkmazov',
     author_email='r.korkmazov@sailplay.ru',
+    install_requires=required,
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
