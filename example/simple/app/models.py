@@ -1,7 +1,12 @@
+from uuid import uuid4
+
 from django.db import models
 
-# Create your models here.
 from shardy.models import ShardedPerTenantModel
+
+
+class Tenant(models.Model):
+    name = models.TextField(default=str(uuid4()))
 
 
 class AppTShardedModel(ShardedPerTenantModel):

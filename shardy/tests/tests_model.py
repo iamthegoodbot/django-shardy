@@ -39,8 +39,13 @@ class MainTest(TestCase):
         DATABASE_ROUTERS=['shardy.db_routers.ShardedPerTenantRouter'],
         DEFAULT_DB_GROUP='default',
         DATABASE_CONFIG={'routing': {}},
+        DATABASES={
+            'default__{}'.format(PID): {},
+        }
     )
     def test_refresh_from_db(self):
+        from django.db import connections
+        import pudb; pudb.set_trace()
         obj = AppTShardedModel.objects.create(partner_id=PID, name='Test')
         obj = AppTShardedModel.objects.get(pk=obj.pk, partner_id=obj.partner_id)
 

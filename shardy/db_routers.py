@@ -13,6 +13,10 @@ class ShardPerTenantException(Exception):
     pass
 
 
+class ShardPerTenantDBAliasException(Exception):
+    pass
+
+
 class ShardedPerTenantRouter(object):
 
     _lookup_cache = {}
@@ -39,7 +43,8 @@ class ShardedPerTenantRouter(object):
             return self._get_shard(model, **hints)
         return None
 
-    def _is_sharded_model(self, model):
+    @staticmethod
+    def _is_sharded_model(model):
         from .models import ShardedPerTenantModel
         return issubclass(model, ShardedPerTenantModel)
 
@@ -85,7 +90,31 @@ class ShardedPerTenantRouter(object):
     def get_db_alias(cls, shard_value, model):
         return cls()._build_db_alias(shard_value, model)
 
+    @staticmethod
+    def load_sharded_db_connections():
+        # TODO: 1) сделать комманду для миграции на основе системной, отличие только в формировании коннектов
+        # TODO: 2) сделать автосоздание базы при заведении нового tenant (сигнал которые вешается на модель из конфига системы)
+        # TODO: 3) переписать код ниже, чтобы он был более конфигурируемым, модель вынести в settings на примере USER_AUTH_MODEL
+
+        from copy import copy
+        from django.conf import settings
+        from django.db import connections
+        from app.models import Tenant
+
+        for tenant in Tenant.objects.all():
+            alias = 'default__{}'.format(tenant.id)
+            if alias in settings.DATABASES:
+                continue
+
+            settings.DATABASES[alias] = copy(settings.DATABASES['default'])
+            settings.DATABASES[alias]['NAME'] = 'postgres__{}'.format(tenant.id)
+            connections.databases[alias] = copy(settings.DATABASES[alias])
+
     def _build_db_alias(self, shard_value, model):
+        # TODO: придумать, как разделять виртуальный базы данных по "регионам"
+        if self._is_sharded_model(model):
+            self.load_sharded_db_connections()
+
         db_group = self._get_db_group(model)
 
         if not shard_value:
@@ -100,9 +129,9 @@ class ShardedPerTenantRouter(object):
             shard_value
         )
         if shard_db_alias not in app.settings.DATABASES:
-            # если не нашли алис в конфигах, то пробуем обратится к
-            # дефолтной базе которая == db_group
-            return db_group
+            raise ShardPerTenantException(
+                'DB alias `{}` if undefined'.format(shard_db_alias)
+            )
         return shard_db_alias
     
     def _get_db_group(self, model):

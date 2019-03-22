@@ -107,6 +107,9 @@ class ShardPerTenantQuerySetTestCase(TestCase):
         DATABASE_ROUTERS=['shardy.db_routers.ShardedPerTenantRouter'],
         DEFAULT_DB_GROUP='default',
         DATABASE_CONFIG={'routing': {}},
+        DATABASES={
+            'default__{}'.format(PID): {},
+        }
     )
     def test_get_or_create(self):
         qs = TShardedModel.objects.get_queryset()
