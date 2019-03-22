@@ -4,9 +4,7 @@ from django.test.utils import override_settings
 from app.models import AppTShardedModel
 from shardy.db_routers import ShardedPerTenantRouter
 from shardy.managers import ShardedPerTenantManager
-from shardy.models import (
-    SharedFieldIsUndefined,
-)
+from shardy.models import SharedFieldIsUndefined
 from .models import (
     TShardedModel,
     TShardedUndefinedModel
