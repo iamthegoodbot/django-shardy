@@ -15,7 +15,7 @@ rmi:
 
 
 build: prepare
-	docker build -f Dockerfile -t django_shardy:0.0.1 .
+	docker build -f Dockerfile -t django_shardy:0.0.2 .
 
 
 run_bash:
