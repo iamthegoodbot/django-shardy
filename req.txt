@@ -1,2 +1,2 @@
-Django==2.1.7
+Django==2.2.1
 django-typed-models==0.9.0
