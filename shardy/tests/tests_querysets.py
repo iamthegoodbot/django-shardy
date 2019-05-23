@@ -110,7 +110,7 @@ class ShardPerTenantQuerySetTestCase(TestCase):
     )
     def test_get_or_create(self):
         qs = TShardedModel.objects.get_queryset()
-        qs.create(partner_id=PID)
+        qs.get_or_create(partner_id=PID)
         self.assertEqual(qs._exact_lookups, {'partner_id': PID})
 
     @override_settings(

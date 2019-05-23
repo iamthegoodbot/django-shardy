@@ -13,7 +13,7 @@ with open('req.txt') as f:
 
 setup(
     name='django-shardy',
-    version='0.0.2',
+    version='0.0.3',
     packages=['shardy', 'shardy.migrations', 'shardy.tests'],
     include_package_data=True,
     license='',  # example license

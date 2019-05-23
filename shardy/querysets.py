@@ -97,21 +97,24 @@ class ShardPerTenantQuerySet(QuerySet):
         cases, such as a create() call.
         """
         self._instance = self.model(**kwargs.copy())
-        lookup, params = self._extract_model_params({}, **kwargs)
-        self._exact_lookups = lookup
+        self._exact_lookups = kwargs.copy()
         return super(ShardPerTenantQuerySet, self).create(**kwargs)
 
     def get_or_create(self, defaults=None, **kwargs):
         """
-        Add the lookups to the _exact_lookups and call super.
+        Look up an object with the given kwargs, creating one if necessary.
+        Return a tuple of (object, created), where created is a boolean
+        specifying whether an object was created.
         """
-        defaults = defaults or {}
-        lookup, params = self._extract_model_params(defaults, **kwargs)
-        self._exact_lookups = lookup
+        # The get() needs to be targeted at the write database in order
+        # to avoid potential transaction consistency problems.
+        self._for_write = True
+        self._exact_lookups = kwargs.copy()
         return (
             super(ShardPerTenantQuerySet, self)
             .get_or_create(defaults=defaults, **kwargs)
         )
+
 
     def bulk_create(self, objs, batch_size=None):
         if objs:

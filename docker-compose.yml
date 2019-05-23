@@ -15,7 +15,7 @@ services:
       retries: 3
 
   app:
-    image: django_shardy:0.0.2
+    image: django_shardy:dev
     environment:
       PG_NAME: 'postgres'
       PG_PASSWORD: ''
