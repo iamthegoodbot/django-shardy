@@ -1,4 +1,4 @@
-FROM hub.docker.sailplay.dev/saiplay.python.baseimage:0.0.1
+FROM cr.yandex/crpn77gk88olee3rn6ke/saiplay/python.baseimage:0.0.1
 
 RUN mkdir -p /var/log/app && mkdir -p /app
 
