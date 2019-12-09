@@ -1,4 +1,4 @@
-FROM cr.yandex/crpn77gk88olee3rn6ke/saiplay/python.baseimage:0.0.1
+FROM cr.yandex/crpn77gk88olee3rn6ke/saiplay/python.baseimage:0.0.2
 
 RUN mkdir -p /var/log/app && mkdir -p /app
 
